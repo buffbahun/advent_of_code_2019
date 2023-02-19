@@ -13,6 +13,59 @@ fn fule_adder(num : i32) -> i32 {
     }
 }
 
+pub fn soln2(vec_inp: Option<Vec<usize>>, boot_param: Option<(usize, usize)>) -> usize {
+    let mut input: Vec<usize> = vec![1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,1,13,19,1,9,19,23,1,6,23,27,2,27,9,31,2,6,31,35,1,5,35,39,1,10,39,43,1,43,13,47,1,47,9,51,1,51,9,55,1,55,9,59,2,9,59,63,2,9,63,67,1,5,67,71,2,13,71,75,1,6,75,79,1,10,79,83,2,6,83,87,1,87,5,91,1,91,9,95,1,95,10,99,2,9,99,103,1,5,103,107,1,5,107,111,2,111,10,115,1,6,115,119,2,10,119,123,1,6,123,127,1,127,5,131,2,9,131,135,1,5,135,139,1,139,10,143,1,143,2,147,1,147,5,0,99,2,0,14,0];
+    input[1] = 12;
+    input[2] = 2;
+
+    match vec_inp {
+        Some(inp) => input = inp,
+        None => ()
+    }
+
+    match boot_param {
+        Some((noun, verb)) => {
+            input[1] = noun;
+            input[2] = verb;
+        }
+        None => ()
+    }
+
+    for i in 0..input.len() {
+        if i % 4 == 0 && input[i] == 99 {
+            break;
+        } else if i % 4 == 0 && input[i] == 1 {
+            let fst = input[i + 1].clone();
+            let snd = input[i + 2].clone();
+            let thd = input[i + 3].clone();
+
+            input[thd] = input[fst] + input[snd];
+        } else if i % 4 == 0 && input[i] == 2 {
+            let fst = input[i + 1].clone();
+            let snd = input[i + 2].clone();
+            let thd = input[i + 3].clone();
+
+            input[thd] = input[fst] * input[snd];
+        }
+
+    }
+
+    input[0]
+}
+
+pub fn soln2_iter(input0: usize, vec_inp: Option<Vec<usize>>) -> usize {
+    for noun in 0..100 {
+        for verb in 0..100 {
+            if input0 == soln2(vec_inp.clone(), Some((noun, verb))) {
+                println!("noun: {}, verb: {}", noun, verb);
+                return 100 * noun + verb;
+            }
+        }
+    }
+
+    return 0;
+}
+
 #[cfg(test)]
 mod tests {
     use crate::*;
@@ -20,5 +73,21 @@ mod tests {
     fn fule_adder_test() {
         let result = 50346;
         assert_eq!(result, fule_adder(33583));
+    }
+
+    #[test]
+    fn soln2_test_1() {
+        let v: Option<Vec<usize>> = Some(vec![1,0,0,0,99]);
+        assert_eq!(2, soln2(v, None));
+    }
+    #[test]
+    fn soln2_test_2() {
+        let v: Option<Vec<usize>> = Some(vec![1,1,1,4,99,5,6,0,99]);
+        assert_eq!(30, soln2(v, None));
+    }
+    #[test]
+    fn soln2_iter_test_1() {
+        let v: Option<Vec<usize>> = None;
+        assert_eq!(1202, soln2_iter(5305097, v));
     }
 }
